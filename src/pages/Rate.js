@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Papa from 'papaparse';
 import { buildURI } from '../utils/data';
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 import { DatePicker, Radio, Spin } from 'antd';
 import moment from 'moment';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+
+const ticks = [];
+for(var i = 0; i <= 24; i++) {
+    const str = i < 10 ? `0${i}` : i;
+    ticks.push(`${str}:00`);
+}
 
 class RatePage extends Component {
 
@@ -22,7 +29,7 @@ class RatePage extends Component {
         console.log('currency:', currency);
 
         return (
-            <div style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
 
                 <h1>{currency}</h1>
 
@@ -34,11 +41,12 @@ class RatePage extends Component {
                     {date ? <DatePicker defaultValue={moment(date, 'YYYYMMDD')} format="YYYYMMDD" onChange={this.onDataPickerChange.bind(this)} /> : null}
                     <div>Pick a type:</div>
                     {currency ?
-                        <div>
+                        <div style={{ marginBottom: 20 }}>
                             <RadioGroup onChange={this.onTypeChange.bind(this)} defaultValue={currency}>
                                 <RadioButton value="EURGBP">EURGBP</RadioButton>
                                 <RadioButton value="EURUSD">EURUSD</RadioButton>
                                 <RadioButton value="GBPUSD">GBPUSD</RadioButton>
+                                <RadioButton value="USDJPY">USDJPY</RadioButton>
                             </RadioGroup>
                         </div>
                         : null}
@@ -58,15 +66,17 @@ class RatePage extends Component {
 
         // Line colour: RURI 瑠璃
         return (
-            <div>
-                <LineChart width={600} height={400} data={data}>
-                    <Legend />
+            <ResponsiveContainer>
+
+                <LineChart data={data}>
+
                     <Tooltip />
-                    <XAxis dataKey="name" hide={true} />
+                    <XAxis dataKey="name" hide={false} allowDecimals={false} ticks={ticks} />
                     <YAxis domain={['dataMin', 'dataMax']} />
                     <Line type="monotone" dataKey="rate" stroke="#005CAF" activeDot={{ r: 0.5 }} dot={false} />
                 </LineChart>
-            </div>
+
+            </ResponsiveContainer>
         );
     }
 
@@ -110,9 +120,13 @@ class RatePage extends Component {
 
 
                 const data = csv.data.map(row => {
+                
+                    
                     return { rate: Number(row[1]), name: moment(row[0]).format('HH:mm') };
-                })
-
+                });
+                // .filter(row => row.rate !== NaN); // not working
+                // remove last row because of NaN
+                data.pop();
 
                 this.setState({ data: data });
 
