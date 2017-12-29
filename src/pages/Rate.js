@@ -11,10 +11,13 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 const ticks = [];
-for(var i = 0; i <= 24; i++) {
+for(var i = 0; i <= 23; i++) {
     const str = i < 10 ? `0${i}` : i;
-    ticks.push(`${str}:00`);
+    ticks.push(moment(`${str}:00`, 'HH:mm').format('HH:mm'));
 }
+
+console.log(ticks);
+
 
 class RatePage extends Component {
 
@@ -71,7 +74,7 @@ class RatePage extends Component {
                 <LineChart data={data}>
 
                     <Tooltip />
-                    <XAxis dataKey="name" hide={false} allowDecimals={false} ticks={ticks} />
+                    <XAxis dataKey="name" hide={false} ticks={ticks} tickCount={24} interval={0} />
                     <YAxis domain={['dataMin', 'dataMax']} />
                     <Line type="monotone" dataKey="rate" stroke="#005CAF" activeDot={{ r: 0.5 }} dot={false} />
                 </LineChart>
@@ -120,13 +123,19 @@ class RatePage extends Component {
 
 
                 const data = csv.data.map(row => {
-                
-                    
-                    return { rate: Number(row[1]), name: moment(row[0]).format('HH:mm') };
-                });
+                    return { rate: Number(row[1]), name: row[0].slice(9, 11) + ':' + row[0].slice(11,13) };
+                }).filter(r => r.name.length === 5 && r.rate > 0);
                 // .filter(row => row.rate !== NaN); // not working
                 // remove last row because of NaN
-                data.pop();
+                console.log(data.length);
+                
+                
+               
+
+                console.log(data.length);
+
+                
+                
 
                 this.setState({ data: data });
 
