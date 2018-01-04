@@ -74,7 +74,7 @@ class RatePage extends Component {
                 <LineChart data={data}>
 
                     <Tooltip />
-                    <XAxis dataKey="name" hide={false} ticks={ticks} tickCount={24} interval={0} />
+                    <XAxis dataKey="name" ticks={ticks} interval={0.0} tickLine={false} autoSkip={false} />
                     <YAxis domain={['dataMin', 'dataMax']} />
                     <Line type="monotone" dataKey="rate" stroke="#005CAF" activeDot={{ r: 0.5 }} dot={false} />
                 </LineChart>
