@@ -50,6 +50,11 @@ class RatePage extends Component {
                                 <RadioButton value="EURUSD">EURUSD</RadioButton>
                                 <RadioButton value="GBPUSD">GBPUSD</RadioButton>
                                 <RadioButton value="USDJPY">USDJPY</RadioButton>
+
+                                <RadioButton value="EURAUD">EURAUD</RadioButton>
+                                <RadioButton value="EURJPY">EURJPY</RadioButton>
+                                <RadioButton value="GBPAUD">GBPAUD</RadioButton>
+                                <RadioButton value="GBPJPY">GBPJPY</RadioButton>
                             </RadioGroup>
                         </div>
                         : null}
